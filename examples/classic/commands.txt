@@ -1,0 +1,3 @@
+open input.jpg
+classic false false false 120
+save output.jpg

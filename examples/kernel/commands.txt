@@ -1,0 +1,3 @@
+open input.jpg
+kernel false false 120 50 50
+save output.jpg
