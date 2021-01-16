@@ -46,7 +46,7 @@ This pixelsorter has 3 sorts available: classic, kernel, and vector. Each mode r
 A description of all the commands and their arguments:
 
 ##### Classic
-The classic pixel sort. Creates intervals in either the vertical or horizontal direction (`vertical`) based on pixel brightness being over or under (`reverse_threshold`) a certain threshold (`threshold`). Sorts those intervals based on pixel brightness, and then places them back in decreasing or increasing order (`reverse`). See [this website](http://satyarth.me/articles/pixel-sorting/) for a better explanation of the algorithm.
+The classic pixel sort. Creates intervals in either the vertical or horizontal direction (`vertical`) based on pixel brightness being over or under (`reverse_threshold`) a certain `threshold`. Sorts those intervals based on pixel brightness, and then places them back in decreasing or increasing order (`reverse`). See [this website](http://satyarth.me/articles/pixel-sorting/) for a better explanation of the algorithm.
 
 `classic <vertical: bool> <reverse: bool> <reverse_threshold: bool> <threshold: uint>`
 
@@ -64,7 +64,7 @@ Example:
 
 ##### Vector
 
-Creates intervals based on a certain vector field described by `expression`. By default the  n intervals (`amount`) will all start along the left y edge. The `spacing` defines the spacing between each group of intervals of size h, where h is the height of the image in pixels. This allows one to create a grid of starting intervals--see the example below, where size = spacing. The rest of the interval is then defined by steps taken based on the value of the vector field at that point. This behavior can get quite glitchy.
+Creates intervals based on a certain vector field described by `expression`. By default the n intervals (`amount`) will all start along the left y edge. The `spacing` defines the spacing between each group of intervals of size h, where h is the height of the image in pixels. This allows one to create a grid of starting intervals--see the example below, where size = spacing. The rest of the interval is then defined by steps taken based on the value of the vector field at that point. This behavior can get quite glitchy.
 
 `vector <reverse: bool> <size: uint> <amount: uint> <spacing: uint> <expression: unspaced string>`
 
