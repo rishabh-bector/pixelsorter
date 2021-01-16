@@ -132,14 +132,12 @@ fn run_command(img: &mut Option<image::DynamicImage>, cmds: Vec<&str>) -> Result
         }
         "kernel" => {
             let rev: bool = read!("{}", cmds[1].bytes());
-            let rev_thresh: bool = read!("{}", cmds[2].bytes());
-            let threshold: u32 = read!("{}", cmds[3].bytes());
             let nx: u32 = read!("{}", cmds[4].bytes());
             let ny: u32 = read!("{}", cmds[5].bytes());
             println!("Running: {:?}", cmds);
-            run_kernel(img, rev, rev_thresh, threshold, nx, ny)
+            run_kernel(img, rev, nx, ny)
         }
-        "nearest" => {
+        "vector" => {
             let rev: bool = read!("{}", cmds[1].bytes());
             let size: u32 = read!("{}", cmds[2].bytes());
             let amount: u32 = read!("{}", cmds[3].bytes());
@@ -223,8 +221,6 @@ fn run_classic(
 fn run_kernel(
     img: &mut Option<image::DynamicImage>,
     reverse: bool,
-    reverse_threshold: bool,
-    threshold: u32,
     numx: u32,
     numy: u32,
 ) {

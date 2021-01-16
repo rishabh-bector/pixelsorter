@@ -1,7 +1,7 @@
 open input2.jpg
-kernel false false 120 70 104
-kernel true true 120 40 78
-kernel false false 120 70 104
-kernel false false 120 40 78
-kernel false false 120 104 104
+kernel false 70 104
+kernel true 40 78
+kernel false 70 104
+kernel false 40 78
+kernel false 104 104
 save output2.jpg
