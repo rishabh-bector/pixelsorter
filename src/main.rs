@@ -193,7 +193,7 @@ fn run_classic(
                 if start == -1 {
                     start = vx as i32;
                 }
-            } else {
+            } else if (b < threshold && !reverse_threshold) || (b > threshold && reverse_threshold) {
                 if start != -1 {
                     let stop = vx as i32;
                     let mut interval: SortableInterval = SortableInterval {
