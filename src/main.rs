@@ -1,10 +1,13 @@
 extern crate image;
+extern crate meval;
 extern crate pbr;
+extern crate rand;
 
 use anyhow::Result;
 use clap::{App, Arg};
 use image::{GenericImage, GenericImageView};
 use pbr::ProgressBar;
+use rand::Rng;
 use std::fs::File;
 use std::io::Write;
 use std::io::{self, BufRead};
@@ -19,6 +22,18 @@ struct SortablePixel {
 struct SortableInterval {
     pixels: Vec<SortablePixel>,
     positions: Vec<(u32, u32)>,
+}
+
+impl SortableInterval {
+    fn new() -> SortableInterval {
+        return SortableInterval {
+            pixels: Vec::new(),
+            positions: Vec::new(),
+        };
+    }
+    fn add(&mut self, p: SortablePixel) {
+        self.pixels.push(p);
+    }
 }
 
 impl SortablePixel {
@@ -124,6 +139,15 @@ fn run_command(img: &mut Option<image::DynamicImage>, cmds: Vec<&str>) -> Result
             println!("Running: {:?}", cmds);
             run_kernel(img, rev, rev_thresh, threshold, nx, ny)
         }
+        "nearest" => {
+            let rev: bool = read!("{}", cmds[1].bytes());
+            let size: u32 = read!("{}", cmds[2].bytes());
+            let amount: u32 = read!("{}", cmds[3].bytes());
+            let spacing: u32 = read!("{}", cmds[4].bytes());
+            let expression: String = read!("{}", cmds[5].bytes());
+            println!("Running: {:?}", cmds);
+            run_vectorfield(img, rev, size, amount, spacing, expression);
+        }
         _ => {}
     }
     Ok(())
@@ -220,7 +244,7 @@ fn run_kernel(
             };
             for kx in 0..width {
                 for ky in 0..height {
-                    let pos = (x*width+kx, y*height+ky);
+                    let pos = (x * width + kx, y * height + ky);
                     interval.pixels.push(SortablePixel::from_rgba(
                         pos.0,
                         pos.1,
@@ -229,6 +253,7 @@ fn run_kernel(
                     interval.positions.push(pos);
                 }
             }
+            println!("{}", interval.pixels.len());
             sort_interval(&mut interval, im, reverse, false);
         }
     }
@@ -236,8 +261,52 @@ fn run_kernel(
     println!("\n");
 }
 
-fn run_nearest(img: &mut Option<image::DynamicImage>) {
+fn run_vectorfield(
+    img: &mut Option<image::DynamicImage>,
+    rev: bool,
+    size: u32,
+    amount: u32,
+    spacing: u32,
+    expression: String,
+) {
     // Intervals are created by finding the most similar nearby pixels
+    let im = img.as_mut().expect("msg: &str");
+    let mut dimensions = im.dimensions();
+    let mut pb = ProgressBar::new(amount as u64);
+    pb.format("╢▌▌░╟");
+    let mut rng = rand::thread_rng();
+    let expr: meval::Expr = expression.parse().unwrap();
+    let func = expr.bind2("x", "y").unwrap();
+    for i in 0..amount {
+        pb.inc();
+        let level = i / dimensions.1;
+        let mut interval = SortableInterval::new();
+        let mut pos = (0, 0);
+        pos = (level * spacing, i % dimensions.1);
+        let d = im.dimensions();
+        for p in 0..size {
+            if pos.0 >= d.0 || pos.1 >= d.1 {
+                break;
+            }
+            interval.add(SortablePixel::from_rgba(
+                pos.0,
+                pos.1,
+                get_pixel(pos.0, pos.1, im, false),
+            ));
+            interval.positions.push(pos);
+            let dir = func(pos.0 as f64, pos.1 as f64);
+            let vec = (dir.cos()*3.0, dir.sin()*3.0);
+            pos = (pos.0+(vec.0 as u32), pos.1+(vec.1 as u32))
+        }
+        sort_interval(&mut interval, im, rev, false);
+    }
+    pb.finish();
+    println!("\n");
+}
+
+fn find_next(dims: (u32, u32), pos: (u32, u32)) -> (u32, u32) {
+    let mut out = (pos.0 + 1, pos.1 + 1);
+    out
 }
 
 fn sort_interval(

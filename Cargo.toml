@@ -12,6 +12,8 @@ text_io = "0.1.8"
 anyhow = "1.0"
 clap = "3.0.0-beta.2"
 pbr = "1.0.4"
+rand = "0.8.2"
+meval = "0.2.0"
 
 [profile.dev]
 opt-level = 0
