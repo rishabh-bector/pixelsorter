@@ -39,7 +39,7 @@ This makes it easier to efficiently chain sorts together, since saving the image
 ##### Sorting
 
 This pixelsorter has 3 sorts available: classic, kernel, and vector. Each mode requires a certain amount of arguments, all of which must be supplied. For example, the `classic` sort takes 4 arguments: vertical, reverse, reverse_threshold and threshold. The first three are booleans while the last is an int. Therefore, a classic sort command could look like this:
-`classic false false false 120`. This is the command which generaearthted the first image in the examples above from this image of Earth:
+`classic false false false 120`. This is the command which generated the first image in the examples above from this image of Earth:
 
 <img src="https://github.com/rishabh-bector/pixelsorter/blob/master/examples/classic/input.jpg" width="600" height="600" />
 
